@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLife Agent · 智能生活服务推荐</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --accent: #ec4899;
+            --bg: #0f0f23;
+            --surface: rgba(255,255,255,0.05);
+            --border: rgba(255,255,255,0.1);
+            --text: #e2e8f0;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-decoration { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.3;
+            animation: float 20s infinite ease-in-out;
+        }
+        .bg-blob:nth-child(1) { width: 500px; height: 500px; background: #6366f1; top: -100px; left: -100px; }
+        .bg-blob:nth-child(2) { width: 400px; height: 400px; background: #ec4899; bottom: -100px; right: -100px; animation-delay: -5s; }
+        .bg-blob:nth-child(3) { width: 350px; height: 350px; background: #06b6d4; top: 40%; left: 50%; animation-delay: -10s; }
+        @keyframes float {
+            0%,100% { transform: translate(0,0) scale(1); }
+            33% { transform: translate(60px,-40px) scale(1.1); }
+            66% { transform: translate(-40px,60px) scale(0.9); }
+        }
+
+        .container { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+        /* Navbar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; }
+        .logo-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+        .nav-links { display: flex; gap: 8px; }
+        .nav-links a {
+            color: var(--text-dim); text-decoration: none; font-size: 14px;
+            padding: 8px 16px; border-radius: 8px; transition: all 0.2s;
+        }
+        .nav-links a:hover { color: var(--text); background: var(--surface); }
+        .nav-cta {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white !important; font-weight: 600;
+        }
+
+        /* Hero */
+        .hero { text-align: center; padding: 60px 0 40px; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--surface); border: 1px solid var(--border);
+            padding: 6px 16px; border-radius: 20px; font-size: 13px;
+            color: var(--text-dim); margin-bottom: 24px;
+        }
+        .hero-badge .dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+        .hero h1 {
+            font-size: 48px; font-weight: 800; line-height: 1.15;
+            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+        .hero p { font-size: 17px; color: var(--text-dim); max-width: 560px; margin: 0 auto; line-height: 1.6; }
+        .hero-actions { display: flex; gap: 12px; justify-content: center; margin-top: 32px; }
+        .btn {
+            padding: 14px 28px; border-radius: 12px; font-size: 15px; font-weight: 600;
+            text-decoration: none; transition: all 0.25s; cursor: pointer; border: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 20px rgba(99,102,241,0.4);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(99,102,241,0.5); }
+        .btn-ghost {
+            background: var(--surface); color: var(--text); border: 1px solid var(--border);
+        }
+        .btn-ghost:hover { background: rgba(255,255,255,0.08); }
+
+        /* Stats */
+        .stats {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+            margin: 50px 0;
+        }
+        .stat-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 16px; padding: 24px; text-align: center;
+            backdrop-filter: blur(10px); transition: all 0.3s;
+        }
+        .stat-card:hover { border-color: var(--primary); transform: translateY(-3px); }
+        .stat-value { font-size: 28px; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-label { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
+
+        /* Section */
+        .section { padding: 40px 0; }
+        .section-title { font-size: 24px; font-weight: 700; margin-bottom: 28px; display: flex; align-items: center; gap: 10px; }
+        .section-title .icon { font-size: 28px; }
+
+        /* Feature Cards */
+        .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .feature-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 20px; padding: 32px; text-decoration: none; color: inherit;
+            backdrop-filter: blur(10px); transition: all 0.3s; position: relative; overflow: hidden;
+        }
+        .feature-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .feature-card:hover::before { opacity: 1; }
+        .feature-card:hover { transform: translateY(-4px); border-color: rgba(99,102,241,0.3); }
+        .feature-icon {
+            width: 52px; height: 52px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; margin-bottom: 20px;
+        }
+        .fi-agent { background: rgba(99,102,241,0.15); }
+        .fi-data { background: rgba(236,72,153,0.15); }
+        .fi-chart { background: rgba(6,182,212,0.15); }
+        .feature-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+        .feature-card p { font-size: 14px; color: var(--text-dim); line-height: 1.6; }
+        .feature-card .tag {
+            display: inline-block; font-size: 11px; padding: 4px 12px; border-radius: 12px;
+            margin-top: 16px; font-weight: 600;
+        }
+        .tag-core { background: rgba(99,102,241,0.15); color: #a5b4fc; }
+        .tag-tradition { background: rgba(6,182,212,0.15); color: #67e8f9; }
+        .tag-viz { background: rgba(236,72,153,0.15); color: #f9a8d4; }
+
+        /* Tech Stack */
+        .tech-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .tech-item {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 14px; padding: 18px; display: flex; align-items: center; gap: 14px;
+            transition: all 0.2s;
+        }
+        .tech-item:hover { border-color: var(--primary); background: rgba(99,102,241,0.05); }
+        .tech-item .t-icon { font-size: 28px; }
+        .tech-item .t-name { font-size: 15px; font-weight: 600; }
+        .tech-item .t-desc { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+        /* ReAct Flow */
+        .react-flow { display: flex; align-items: center; justify-content: center; gap: 4px; flex-wrap: wrap; }
+        .flow-node {
+            padding: 16px 24px; border-radius: 14px; text-align: center;
+            font-size: 14px; font-weight: 600; min-width: 120px;
+            transition: all 0.3s; cursor: default;
+        }
+        .flow-node:hover { transform: scale(1.05); }
+        .flow-node small { display: block; font-size: 11px; font-weight: 400; margin-top: 4px; opacity: 0.7; }
+        .flow-thought { background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3); color: #93c5fd; }
+        .flow-action { background: rgba(249,115,22,0.15); border: 1px solid rgba(249,115,22,0.3); color: #fdba74; }
+        .flow-observation { background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); color: #86efac; }
+        .flow-final { background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.3); color: #d8b4fe; }
+        .flow-arrow { color: var(--text-dim); font-size: 22px; }
+
+        /* User Form */
+        .form-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 20px; padding: 32px; backdrop-filter: blur(10px);
+        }
+        .form-row { display: flex; gap: 12px; align-items: center; }
+        .form-input {
+            flex: 1; padding: 14px 20px; background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border); border-radius: 12px;
+            font-size: 15px; color: var(--text); outline: none; transition: border-color 0.2s;
+        }
+        .form-input:focus { border-color: var(--primary); }
+        .form-input::placeholder { color: var(--text-dim); }
+
+        /* Footer */
+        footer { text-align: center; padding: 40px 0; color: var(--text-dim); font-size: 13px; }
+        footer a { color: var(--primary); text-decoration: none; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .features, .tech-grid, .stats { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-decoration">
+        <div class="bg-blob"></div>
+        <div class="bg-blob"></div>
+        <div class="bg-blob"></div>
+    </div>
+
+    <div class="container">
+        <!-- Navbar -->
+        <nav>
+            <div class="logo">
+                <div class="logo-icon">🤖</div>
+                <span>SmartLife Agent</span>
+            </div>
+            <div class="nav-links">
+                <a href="/chat">Agent 对话</a>
+                <a href="/visualization">数据可视化</a>
+                <a href="/docs">API 文档</a>
+                <a href="/chat" class="nav-cta">开始体验</a>
+            </div>
+        </nav>
+
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-badge">
+                <span class="dot"></span>
+                Agent 在线 · qwen3.8-max 已连接
+            </div>
+            <h1>用自然语言<br>获取智能推荐</h1>
+            <p>基于 Agent 架构与 qwen3.8-max 大模型，通过 ReAct 循环与 Function Calling 实现自主决策的餐饮推荐平台</p>
+            <div class="hero-actions">
+                <a href="/chat" class="btn btn-primary">🚀 开始对话</a>
+                <a href="/visualization" class="btn btn-ghost">📊 查看数据</a>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value">1,800</div>
+                <div class="stat-label">真实用户</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">500</div>
+                <div class="stat-label">入驻商户</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">18,645</div>
+                <div class="stat-label">交互记录</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">9</div>
+                <div class="stat-label">Agent 工具</div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="section">
+            <div class="section-title"><span class="icon">✨</span> 核心功能</div>
+            <div class="features">
+                <a href="/chat" class="feature-card">
+                    <div class="feature-icon fi-agent">🤖</div>
+                    <h3>Agent 智能对话</h3>
+                    <p>自然语言交互，LLM 自主选择工具，支持多步推理与多工具组合调用</p>
+                    <span class="tag tag-core">Agent 核心</span>
+                </a>
+                <a href="/" class="feature-card" onclick="document.getElementById('user-form').scrollIntoView({behavior:'smooth'});return false;">
+                    <div class="feature-icon fi-data">🍽️</div>
+                    <h3>个性化推荐</h3>
+                    <p>协同过滤 + 标签匹配 + 内容推荐三种算法，老用户新用户均可使用</p>
+                    <span class="tag tag-tradition">推荐算法</span>
+                </a>
+                <a href="/visualization" class="feature-card">
+                    <div class="feature-icon fi-chart">📊</div>
+                    <h3>数据可视化</h3>
+                    <p>业务总览、区域分析、用户偏好分布、热门商户排行等数据看板</p>
+                    <span class="tag tag-viz">数据展示</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Tech Stack -->
+        <div class="section">
+            <div class="section-title"><span class="icon">🛠️</span> 技术架构</div>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <span class="t-icon">🧠</span>
+                    <div>
+                        <div class="t-name">qwen3.8-max</div>
+                        <div class="t-desc">阿里旗舰大模型 · 2.4万亿参数</div>
+                    </div>
+                </div>
+                <div class="tech-item">
+                    <span class="t-icon">🔄</span>
+                    <div>
+                        <div class="t-name">ReAct 循环</div>
+                        <div class="t-desc">Thought-Action-Observation</div>
+                    </div>
+                </div>
+                <div class="tech-item">
+                    <span class="t-icon">🔧</span>
+                    <div>
+                        <div class="t-name">Function Calling</div>
+                        <div class="t-desc">9个工具 · JSON Schema 标准</div>
+                    </div>
+                </div>
+                <div class="tech-item">
+                    <span class="t-icon">⚡</span>
+                    <div>
+                        <div class="t-name">FastAPI</div>
+                        <div class="t-desc">异步高性能 Web 框架</div>
+                    </div>
+                </div>
+                <div class="tech-item">
+                    <span class="t-icon">🗄️</span>
+                    <div>
+                        <div class="t-name">MySQL + Hive</div>
+                        <div class="t-desc">ADS 层 + 数仓四层架构</div>
+                    </div>
+                </div>
+                <div class="tech-item">
+                    <span class="t-icon">🛡️</span>
+                    <div>
+                        <div class="t-name">容错降级</div>
+                        <div class="t-desc">API/DB 失败自动 Mock 回退</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ReAct Flow -->
+        <div class="section">
+            <div class="section-title"><span class="icon">🔄</span> ReAct 推理流程</div>
+            <div class="react-flow">
+                <div class="flow-node flow-thought">Thought<small>分析用户意图</small></div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-node flow-action">Action<small>选择并调用工具</small></div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-node flow-observation">Observation<small>获取工具返回</small></div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-node flow-thought">Thought<small>分析是否完成</small></div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-node flow-final">Final<small>生成自然语言回复</small></div>
+            </div>
+        </div>
+
+        <!-- Traditional Form -->
+        <div class="section" id="user-form">
+            <div class="section-title"><span class="icon">🍽️</span> 传统推荐入口</div>
+            <div class="form-card">
+                <p style="color:var(--text-dim);font-size:14px;margin-bottom:20px;">输入用户ID，系统将根据历史行为进行协同过滤推荐。新用户将引导选择偏好标签。</p>
+                <form action="/check_user" method="post" class="form-row">
+                    <input type="text" name="user_id" class="form-input" placeholder="输入用户ID，如 U0001" required>
+                    <button type="submit" class="btn btn-primary">开始推荐</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>SmartLife Agent · 基于 qwen3.8-max + ReAct + Function Calling 构建</p>
+            <p style="margin-top:8px;">
+                <a href="/chat">Agent 对话</a> ·
+                <a href="/visualization">数据可视化</a> ·
+                <a href="/docs">API 文档</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

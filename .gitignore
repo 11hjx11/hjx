@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment Variables
+.env
+*.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Models (large files)
+*.pth
+*.pt
+*.onnx
+
+# Test artifacts
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Vector store (ChromaDB 持久化数据，本地生成)
+.chroma_db/
+.chroma/
+
+# Build
+dist/
+build/
+*.egg-info/
+
+# 同步脚本（含 token，勿提交）
+sync_git.bat
+rewrite_git.bat

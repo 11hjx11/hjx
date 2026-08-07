@@ -1,0 +1,206 @@
+{
+  "description": "多智能体餐饮推荐系统评测集 - 覆盖意图路由 / 工具选择 / 响应质量",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "rec_01",
+      "input": "推荐一家川菜餐厅",
+      "expected_intent": "recommendation",
+      "expected_tools_any": ["tag_based_recommendation", "semantic_search_merchants"],
+      "expected_keywords_any": ["川菜", "辣"],
+      "category": "recommendation_cuisine"
+    },
+    {
+      "id": "rec_02",
+      "input": "我想吃粤菜，预算中档",
+      "expected_intent": "recommendation",
+      "expected_tools_any": ["tag_based_recommendation"],
+      "expected_keywords_any": ["粤菜", "广东"],
+      "category": "recommendation_cuisine_price"
+    },
+    {
+      "id": "rec_03",
+      "input": "我是user001，给我推荐餐厅",
+      "expected_intent": "recommendation",
+      "expected_tools_any": ["collaborative_filtering", "check_user"],
+      "expected_keywords_any": ["推荐"],
+      "category": "recommendation_user"
+    },
+    {
+      "id": "rec_04",
+      "input": "推荐几家热门餐厅",
+      "expected_intent": "recommendation",
+      "expected_tools_any": ["content_based_recommendation", "get_top_merchants"],
+      "expected_keywords_any": ["热门", "评分", "推荐"],
+      "category": "recommendation_popular"
+    },
+    {
+      "id": "rec_05",
+      "input": "想吃辣的暖胃的",
+      "expected_intent": "recommendation",
+      "expected_tools_any": ["semantic_search_merchants", "tag_based_recommendation"],
+      "expected_keywords_any": ["推荐", "餐厅"],
+      "category": "recommendation_semantic"
+    },
+    {
+      "id": "rec_06",
+      "input": "推荐一家火锅店",
+      "expected_intent": "recommendation",
+      "expected_tools_any": ["tag_based_recommendation", "semantic_search_merchants"],
+      "expected_keywords_any": ["火锅", "麻辣"],
+      "category": "recommendation_cuisine"
+    },
+    {
+      "id": "rec_07",
+      "input": "有什么好吃的烧烤店",
+      "expected_intent": "recommendation",
+      "expected_tools_any": ["tag_based_recommendation", "semantic_search_merchants"],
+      "expected_keywords_any": ["烧烤", "烤"],
+      "category": "recommendation_cuisine"
+    },
+    {
+      "id": "rec_08",
+      "input": "经济实惠的餐厅有哪些",
+      "expected_intent": "recommendation",
+      "expected_tools_any": ["tag_based_recommendation", "content_based_recommendation"],
+      "expected_keywords_any": ["经济", "实惠", "便宜"],
+      "category": "recommendation_price"
+    },
+    {
+      "id": "ana_01",
+      "input": "业务整体情况怎么样",
+      "expected_intent": "analysis",
+      "expected_tools_any": ["get_business_overview"],
+      "expected_keywords_any": ["用户", "商户", "订单"],
+      "category": "analysis_overview"
+    },
+    {
+      "id": "ana_02",
+      "input": "各区域的商业数据分析",
+      "expected_intent": "analysis",
+      "expected_tools_any": ["get_area_analysis"],
+      "expected_keywords_any": ["区域", "地区"],
+      "category": "analysis_area"
+    },
+    {
+      "id": "ana_03",
+      "input": "热门商户排行榜",
+      "expected_intent": "analysis",
+      "expected_tools_any": ["get_top_merchants"],
+      "expected_keywords_any": ["排行", "排名", "热门"],
+      "category": "analysis_ranking"
+    },
+    {
+      "id": "ana_04",
+      "input": "统计一下业务数据",
+      "expected_intent": "analysis",
+      "expected_tools_any": ["get_business_overview", "get_area_analysis"],
+      "expected_keywords_any": ["数据", "统计"],
+      "category": "analysis_overview"
+    },
+    {
+      "id": "pro_01",
+      "input": "用户的菜系偏好分布",
+      "expected_intent": "profile",
+      "expected_tools_any": ["get_user_preferences"],
+      "expected_keywords_any": ["偏好", "菜系"],
+      "category": "profile_preferences"
+    },
+    {
+      "id": "pro_02",
+      "input": "用户喜欢什么类型的餐厅",
+      "expected_intent": "profile",
+      "expected_tools_any": ["get_user_preferences"],
+      "expected_keywords_any": ["偏好", "喜欢"],
+      "category": "profile_preferences"
+    },
+    {
+      "id": "pro_03",
+      "input": "分析用户的价格区间偏好",
+      "expected_intent": "profile",
+      "expected_tools_any": ["get_user_preferences"],
+      "expected_keywords_any": ["价格", "偏好"],
+      "category": "profile_price"
+    },
+    {
+      "id": "chat_01",
+      "input": "你好",
+      "expected_intent": "chat",
+      "expected_tools_any": [],
+      "expected_keywords_any": ["你好", "帮"],
+      "category": "chat_greeting"
+    },
+    {
+      "id": "chat_02",
+      "input": "今天天气怎么样",
+      "expected_intent": "chat",
+      "expected_tools_any": [],
+      "expected_keywords_any": [],
+      "category": "chat_off_topic"
+    },
+    {
+      "id": "chat_03",
+      "input": "谢谢",
+      "expected_intent": "chat",
+      "expected_tools_any": [],
+      "expected_keywords_any": [],
+      "category": "chat_off_topic"
+    },
+    {
+      "id": "cpx_01",
+      "input": "分析用户偏好并推荐餐厅",
+      "expected_intent": "complex",
+      "expected_tools_any": ["get_user_preferences", "collaborative_filtering", "tag_based_recommendation"],
+      "expected_keywords_any": ["推荐"],
+      "category": "complex"
+    },
+    {
+      "id": "cpx_02",
+      "input": "看看业务数据，顺便推荐几家餐厅",
+      "expected_intent": "complex",
+      "expected_tools_any": ["get_business_overview", "content_based_recommendation"],
+      "expected_keywords_any": ["推荐", "数据"],
+      "category": "complex"
+    },
+    {
+      "id": "rec_09",
+      "input": "推荐日料",
+      "expected_intent": "recommendation",
+      "expected_tools_any": ["tag_based_recommendation", "semantic_search_merchants"],
+      "expected_keywords_any": ["日料", "日本", "寿司"],
+      "category": "recommendation_cuisine"
+    },
+    {
+      "id": "rec_10",
+      "input": "高档西餐厅推荐",
+      "expected_intent": "recommendation",
+      "expected_tools_any": ["tag_based_recommendation", "semantic_search_merchants"],
+      "expected_keywords_any": ["西餐", "高档", "牛排"],
+      "category": "recommendation_cuisine_price"
+    },
+    {
+      "id": "ana_05",
+      "input": "哪个区域商户最多",
+      "expected_intent": "analysis",
+      "expected_tools_any": ["get_area_analysis"],
+      "expected_keywords_any": ["区域"],
+      "category": "analysis_area"
+    },
+    {
+      "id": "pro_04",
+      "input": "用户画像分析",
+      "expected_intent": "profile",
+      "expected_tools_any": ["get_user_preferences"],
+      "expected_keywords_any": ["画像", "偏好"],
+      "category": "profile_preferences"
+    },
+    {
+      "id": "rec_11",
+      "input": "适合约会的高档餐厅",
+      "expected_intent": "recommendation",
+      "expected_tools_any": ["semantic_search_merchants", "tag_based_recommendation"],
+      "expected_keywords_any": ["高档", "推荐"],
+      "category": "recommendation_semantic"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+# ============================================================
+# 多智能体餐饮推荐系统 - Docker Compose
+# 启动: docker compose up -d
+# 查看日志: docker compose logs -f app
+# ============================================================
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: loudi_food_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-rootpass}
+      MYSQL_DATABASE: ${DB_NAME:-loudi_food}
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # 初始化建表脚本（首次启动自动执行）
+      - ./scripts/mysql/create_ads_tables.sql:/docker-entrypoint-initdb.d/01_tables.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${DB_PASSWORD:-rootpass}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  app:
+    build: .
+    container_name: loudi_food_app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      # LLM 配置
+      LLM_PROVIDER: ${LLM_PROVIDER:-qwen}
+      QWEN_API_KEY: ${QWEN_API_KEY:-}
+      QWEN_MODEL: ${QWEN_MODEL:-qwen-max}
+      # 数据库（指向 compose 内的 mysql 服务）
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_USER: root
+      DB_PASSWORD: ${DB_PASSWORD:-rootpass}
+      DB_NAME: ${DB_NAME:-loudi_food}
+      # LangFuse 可观测性（可选）
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:-}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY:-}
+      LANGFUSE_HOST: ${LANGFUSE_HOST:-https://cloud.langfuse.com}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    # 向量库持久化卷（ChromaDB 数据）
+    volumes:
+      - chroma_data:/app/backend/.chroma_db
+
+volumes:
+  mysql_data:
+  chroma_data:

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据可视化 - 智能生活服务</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .chart-container {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        .chart-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #555;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>数据可视化</h1>
+        
+        <!-- 业务概览 -->
+        <div class="chart-container">
+            <h2 class="chart-title">业务概览</h2>
+            <div class="stats-grid" id="overview-stats">
+                <!-- 数据将通过JavaScript动态填充 -->
+            </div>
+        </div>
+        
+        <!-- 区域分布 -->
+        <div class="chart-container">
+            <h2 class="chart-title">区域商业分析</h2>
+            <div id="area-chart">
+                <!-- 图表将通过JavaScript动态填充 -->
+            </div>
+        </div>
+        
+        <!-- 热门商户 -->
+        <div class="chart-container">
+            <h2 class="chart-title">热门商户</h2>
+            <div id="top-merchants">
+                <!-- 数据将通过JavaScript动态填充 -->
+            </div>
+        </div>
+        
+        <!-- 用户偏好分布 -->
+        <div class="chart-container">
+            <h2 class="chart-title">用户偏好分布</h2>
+            <div id="user-preferences">
+                <!-- 数据将通过JavaScript动态填充 -->
+            </div>
+        </div>
+        
+        <a href="/" class="back-link">返回首页</a>
+    </div>
+    
+    <script>
+        // 加载业务概览数据
+        async function loadOverviewData() {
+            const response = await fetch('/api/data/overview');
+            const data = await response.json();
+            const container = document.getElementById('overview-stats');
+            
+            container.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${data.total_users}</div>
+                    <div class="stat-label">总用户数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${data.total_merchants}</div>
+                    <div class="stat-label">总商户数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${data.total_orders}</div>
+                    <div class="stat-label">总订单数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">¥${data.total_amount.toFixed(2)}</div>
+                    <div class="stat-label">总金额</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">¥${data.avg_order_amount.toFixed(2)}</div>
+                    <div class="stat-label">平均订单金额</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${data.avg_merchant_score.toFixed(2)}</div>
+                    <div class="stat-label">平均商户评分</div>
+                </div>
+            `;
+        }
+        
+        // 加载区域数据
+        async function loadAreaData() {
+            const response = await fetch('/api/data/areas');
+            const data = await response.json();
+            const container = document.getElementById('area-chart');
+            
+            let html = '<table style="width: 100%; border-collapse: collapse;">';
+            html += '<tr style="background-color: #f2f2f2;"><th style="padding: 10px; border: 1px solid #ddd;">区域</th><th style="padding: 10px; border: 1px solid #ddd;">商户数</th><th style="padding: 10px; border: 1px solid #ddd;">订单数</th><th style="padding: 10px; border: 1px solid #ddd;">总金额</th><th style="padding: 10px; border: 1px solid #ddd;">平均评分</th></tr>';
+            
+            data.forEach(area => {
+                html += `<tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${area.area}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${area.total_merchants}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${area.total_orders}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">¥${area.total_amount.toFixed(2)}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${area.avg_merchant_score.toFixed(2)}</td>
+                </tr>`;
+            });
+            
+            html += '</table>';
+            container.innerHTML = html;
+        }
+        
+        // 加载热门商户
+        async function loadTopMerchants() {
+            const response = await fetch('/api/data/top_merchants');
+            const data = await response.json();
+            const container = document.getElementById('top-merchants');
+            
+            let html = '<table style="width: 100%; border-collapse: collapse;">';
+            html += '<tr style="background-color: #f2f2f2;"><th style="padding: 10px; border: 1px solid #ddd;">商户名称</th><th style="padding: 10px; border: 1px solid #ddd;">区域</th><th style="padding: 10px; border: 1px solid #ddd;">评分</th><th style="padding: 10px; border: 1px solid #ddd;">订单数</th><th style="padding: 10px; border: 1px solid #ddd;">平均消费</th></tr>';
+            
+            data.forEach(merchant => {
+                html += `<tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${merchant.merchant_name}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${merchant.area}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${merchant.score}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${merchant.total_orders}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">¥${merchant.avg_order_amount.toFixed(2)}</td>
+                </tr>`;
+            });
+            
+            html += '</table>';
+            container.innerHTML = html;
+        }
+        
+        // 加载用户偏好
+        async function loadUserPreferences() {
+            const response = await fetch('/api/data/user_preferences');
+            const data = await response.json();
+            const container = document.getElementById('user-preferences');
+            
+            let html = '<div style="display: flex; gap: 20px; flex-wrap: wrap;">';
+            
+            // 菜系偏好
+            html += '<div style="flex: 1; min-width: 300px;"><h3>菜系偏好</h3>';
+            html += '<ul style="list-style: none; padding: 0;">';
+            Object.entries(data.cuisine).forEach(([cuisine, count]) => {
+                html += `<li style="padding: 5px 0;">${cuisine}: ${count}</li>`;
+            });
+            html += '</ul></div>';
+            
+            // 价格偏好
+            html += '<div style="flex: 1; min-width: 300px;"><h3>价格偏好</h3>';
+            html += '<ul style="list-style: none; padding: 0;">';
+            Object.entries(data.price).forEach(([price, count]) => {
+                html += `<li style="padding: 5px 0;">${price}: ${count}</li>`;
+            });
+            html += '</ul></div>';
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        // 页面加载时获取数据
+        window.onload = function() {
+            loadOverviewData();
+            loadAreaData();
+            loadTopMerchants();
+            loadUserPreferences();
+        };
+    </script>
+</body>
+</html>

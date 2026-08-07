@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>推荐结果 - 智能生活服务</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .user-info {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+        .merchant-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .merchant-card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .merchant-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 10px 0;
+        }
+        .info-item {
+            background-color: #f0f0f0;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .feedback-form {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .feedback-form h4 {
+            margin-top: 0;
+            color: #555;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 100px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>推荐结果</h1>
+        <div class="user-info">
+            <p><strong>用户ID:</strong> {{ user_id }}</p>
+            {% if is_new_user %}
+            <p><strong>用户类型:</strong> 新用户</p>
+            <p><strong>偏好菜系:</strong> {{ cuisine }}</p>
+            <p><strong>价格区间:</strong> {{ price_range }}</p>
+            {% else %}
+            <p><strong>用户类型:</strong> 老用户</p>
+            <p><strong>推荐方式:</strong> 协同过滤</p>
+            {% endif %}
+        </div>
+        
+        <h2>为您推荐的餐厅</h2>
+        {% if recommendations %}
+            {% for merchant in recommendations %}
+            <div class="merchant-card">
+                <h3>{{ merchant.merchant_name }}</h3>
+                <div class="merchant-info">
+                    <span class="info-item">区域: {{ merchant.area }}</span>
+                    <span class="info-item">评分: {{ merchant.score }}</span>
+                    <span class="info-item">订单数: {{ merchant.total_orders }}</span>
+                    <span class="info-item">平均消费: ¥{{ merchant.avg_order_amount }}</span>
+                </div>
+                
+                <div class="feedback-form">
+                    <h4>反馈</h4>
+                    <form action="/submit_feedback" method="post">
+                        <input type="hidden" name="user_id" value="{{ user_id }}">
+                        <input type="hidden" name="merchant_id" value="{{ merchant.merchant_id }}">
+                        <div class="form-group">
+                            <label>是否满意:</label>
+                            <input type="radio" name="is_satisfied" value="True" required> 满意
+                            <input type="radio" name="is_satisfied" value="False"> 不满意
+                        </div>
+                        <div class="form-group">
+                            <label>原因:</label>
+                            <textarea name="reason" placeholder="请输入您的反馈原因"></textarea>
+                        </div>
+                        <button type="submit">提交反馈</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>暂无推荐结果</p>
+        {% endif %}
+        
+        <a href="/" class="back-link">返回首页</a>
+    </div>
+</body>
+</html>
